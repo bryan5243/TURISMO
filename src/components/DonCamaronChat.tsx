@@ -69,31 +69,38 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 scale-[1.1]">
-      <div className="bg-white w-96 h-[460px] rounded-xl shadow-lg flex flex-col overflow-hidden border">
+    <div className="fixed bottom-4 right-4 z-50 scale-[1.0]">
+      <div className="bg-white w-full max-w-xs md:w-96 h-[420px] md:h-[460px] rounded-xl shadow-lg flex flex-col overflow-hidden border">
         <div className="bg-orange-500 text-white px-4 py-2 flex justify-between items-center">
-          <span>Don Camarón Asistente</span>
+          <span className="text-sm md:text-base">Don Camarón Asistente</span>
           <button onClick={onClose} className="text-white font-bold text-xl">
             ×
           </button>
         </div>
 
-        <div className="flex-1 p-4 space-y-4 overflow-y-auto text-sm">
+        <div className="flex-1 p-3 md:p-4 space-y-3 overflow-y-auto text-sm">
           {mensajes.map((msg, i) => (
-            <div key={i} className={`flex items-start gap-2 ${msg.remitente === "bot" ? "flex-row" : "flex-row-reverse"}`}>
+            <div
+              key={i}
+              className={`flex items-start gap-2 ${msg.remitente === "bot" ? "flex-row" : "flex-row-reverse"
+                }`}
+            >
               <Image
-                src={msg.remitente === "bot" ? "/images/chatbot-camaron.png" : "/images/user-generic.png"}
+                src={
+                  msg.remitente === "bot"
+                    ? "/images/chatbot-camaron.png"
+                    : "/images/user-generic.png"
+                }
                 alt={msg.remitente === "bot" ? "Don Camarón" : "Usuario"}
-                width={32}
-                height={32}
+                width={28}
+                height={28}
                 className="rounded-full object-cover border"
               />
               <div
-                className={`px-3 py-2 rounded-lg max-w-[75%] ${
-                  msg.remitente === "bot"
+                className={`px-3 py-2 rounded-lg max-w-[80%] ${msg.remitente === "bot"
                     ? "bg-orange-100 text-left"
                     : "bg-blue-100 text-right"
-                }`}
+                  }`}
               >
                 {msg.texto}
               </div>
@@ -104,8 +111,8 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
               <Image
                 src="/images/chatbot-camaron.png"
                 alt="Don Camarón escribiendo"
-                width={32}
-                height={32}
+                width={28}
+                height={28}
                 className="rounded-full object-cover border"
               />
               <div className="bg-orange-100 px-3 py-2 rounded-lg text-sm text-gray-600 flex items-center gap-1">
@@ -135,5 +142,6 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
         </div>
       </div>
     </div>
+
   );
 }

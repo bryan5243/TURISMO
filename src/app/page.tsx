@@ -38,9 +38,9 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-b from-[#014d4d] via-[#f97316] to-[#fef3c7] px-4 md:px-16 py-10 text-gray-900">
       <header className="text-center mb-10">
         <h2 className="text-xl font-medium text-white">Santa Rosa</h2>
-        <h1 className="text-5xl font-extrabold text-white mt-2">Explore Santa Rosa</h1>
+        <h1 className="text-5xl font-extrabold text-white mt-2">Explora Santa Rosa</h1>
         <p className="text-lg text-white mt-2">
-          Where the river, beach, and shrimp await.
+          Donde te esperan el río, la playa y el camarón.
         </p>
       </header>
 
@@ -73,7 +73,7 @@ export default function HomePage() {
 
 
       <section className="mb-20">
-        <h2 className="text-2xl font-semibold mb-6">Popular Places</h2>
+        <h2 className="text-2xl font-semibold mb-6">Lugares Populares</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {lugaresPopulares.map((lugar) => (
             <div
