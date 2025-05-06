@@ -18,10 +18,10 @@ export default function HomePage() {
   }, []);
 
   const categorias = [
-    { nombre: "Playas", icono: <FaUmbrellaBeach className="text-2xl text-orange-500" /> },
-    { nombre: "Ríos", icono: <FaWater className="text-2xl text-blue-500" /> },
-    { nombre: "Parques", icono: <FaTree className="text-2xl text-green-600" /> },
-    { nombre: "Historia", icono: <FaLandmark className="text-2xl text-gray-700" /> },
+    { nombre: "Playas", icono: <FaUmbrellaBeach size={30} className="text-2xl text-orange-500" /> },
+    { nombre: "Ríos", icono: <FaWater size={30} className="text-2xl text-blue-500" /> },
+    { nombre: "Parques", icono: <FaTree size={30} className="text-2xl text-green-600" /> },
+    { nombre: "Historia", icono: <FaLandmark size={30} className="text-2xl text-gray-700" /> },
   ];
 
 
@@ -54,16 +54,19 @@ export default function HomePage() {
         />
       </div>
 
-      <div className="flex flex-wrap justify-center gap-6 mb-10">
-        {categorias.map((cat) => (
-          <button
-            key={cat.nombre}
-            className="bg-white text-gray-800 px-5 py-3 rounded-xl shadow-md flex items-center gap-3 hover:bg-orange-100 hover:scale-105 transition-all"
-          >
-            {cat.icono}
-            <span className="font-medium">{cat.nombre}</span>
-          </button>
-        ))}
+
+      <div className="max-w-4xl mx-auto mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-center">
+          {categorias.map((cat) => (
+            <button
+              key={cat.nombre}
+              className="bg-white rounded-2xl p-5 flex flex-col items-center shadow-md hover:shadow-xl transition duration-300 hover:scale-105"
+            >
+              {cat.icono}
+              <span className="mt-3 text-sm font-semibold text-gray-800">{cat.nombre}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
 
