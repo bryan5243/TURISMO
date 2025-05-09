@@ -20,6 +20,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "keen-slider/keen-slider.min.css";
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 
 body {
   background: var(--background);
