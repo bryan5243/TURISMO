@@ -69,8 +69,8 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 scale-[1.0]">
-      <div className="bg-white w-full max-w-xs md:w-96 h-[420px] md:h-[460px] rounded-xl shadow-lg flex flex-col overflow-hidden border">
+    <div className="fixed bottom-4 right-2 left-2 md:right-4 md:left-auto z-50">
+      <div className="bg-white w-full max-w-md mx-auto h-[80vh] md:h-[460px] rounded-xl shadow-lg flex flex-col overflow-hidden border">
         <div className="bg-orange-500 text-white px-4 py-2 flex justify-between items-center">
           <span className="text-sm md:text-base">Don Camarón Asistente</span>
           <button onClick={onClose} className="text-white font-bold text-xl">
@@ -98,8 +98,8 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
               />
               <div
                 className={`px-3 py-2 rounded-lg max-w-[80%] ${msg.remitente === "bot"
-                    ? "bg-orange-100 text-left"
-                    : "bg-blue-100 text-right"
+                  ? "bg-orange-100 text-left"
+                  : "bg-blue-100 text-right"
                   }`}
               >
                 {msg.texto}
@@ -142,6 +142,7 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
         </div>
       </div>
     </div>
+
 
   );
 }
