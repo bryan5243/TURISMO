@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Categoria {
+  id       Int     @id @default(autoincrement())
+  nombre   String
+  icono    String
+  lugares  Lugar[]
+}
+model Lugar {
+  id           Int             @id @default(autoincrement())
+  nombre       String
+  slug         String          @unique
+  descripcion  String?
+  imagen       String
+  latitud      Float
+  longitud     Float
+  categoriaId  Int
+  categoria    Categoria       @relation(fields: [categoriaId], references: [id])
+  imagenes     ImagenLugar[]
+  hoteles      Hotel[]
+  restaurantes Restaurante[]
+  transportes  Transporte[]
+}
+
+
+
+model ImagenLugar {
+  id      Int    @id @default(autoincrement())
+  url     String
+  lugarId Int
+  lugar   Lugar  @relation(fields: [lugarId], references: [id])
+}
+
+
+model Hotel {
+  id      Int    @id @default(autoincrement())
+  nombre  String
+  imagen  String
+  lugarId Int
+  lugar   Lugar  @relation(fields: [lugarId], references: [id])
+}
+
+model Restaurante {
+  id      Int    @id @default(autoincrement())
+  nombre  String
+  imagen  String
+  lugarId Int
+  lugar   Lugar  @relation(fields: [lugarId], references: [id])
+}
+
+model Transporte {
+  id          Int    @id @default(autoincrement())
+  nombre      String
+  imagen      String
+  descripcion String
+  lugarId     Int
+  lugar       Lugar  @relation(fields: [lugarId], references: [id])
+}
