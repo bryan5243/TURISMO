@@ -49,31 +49,6 @@ interface Lugar {
     latitud: number;
     longitud: number;
 }
-const sliderSettings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-};
- 
-// 👇 Añade esto arriba de tu componente o junto a tus otras funciones
-const renderSlider = (items: any[], tipo: "transporte" | "restaurante" | "hotel") => (
-    <Slider {...sliderSettings}>
-        {items.map((item: any) => (
-            <div key={item.id} className="px-2">
-                <div className="bg-white rounded-xl shadow overflow-hidden">
-                    <Image src={item.imagen} alt={item.nombre} width={400} height={250} className="w-full h-48 object-cover" />
-                    <div className="p-3">
-                        <h3 className="text-md font-semibold text-gray-800">{item.nombre}</h3>
-                        {tipo === "transporte" && <p className="text-sm text-gray-600">{item.descripcion}</p>}
-                    </div>
-                </div>
-            </div>
-        ))}
-    </Slider>
-);
-
 
 export default function LugarPage() {
     const { slug } = useParams();
@@ -90,9 +65,33 @@ export default function LugarPage() {
         beforeChange: (_: number, next: number) => setFotoActual(next),
     };
 
+    const renderSlider = (items: any[], tipo: "transporte" | "restaurante" | "hotel") => (
+        <Slider {...sliderSettings}>
+            {items.map((item: any) => (
+                <div key={item.id} className="px-2">
+                    <div className="bg-white rounded-xl shadow overflow-hidden">
+                        <Image
+                            src={item.imagen}
+                            alt={item.nombre}
+                            width={400}
+                            height={250}
+                            className="w-full h-48 object-cover"
+                        />
+                        <div className="p-3">
+                            <h3 className="text-md font-semibold text-gray-800">{item.nombre}</h3>
+                            {tipo === "transporte" && (
+                                <p className="text-sm text-gray-600">{item.descripcion}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </Slider>
+    );
+
     useEffect(() => {
         fetch(`/api/lugares/${slug}`)
-            .then(res => res.json())
+            .then((res) => res.json())
             .then(setLugar);
     }, [slug]);
 
@@ -102,13 +101,18 @@ export default function LugarPage() {
         <>
             <HeaderDestinoRosa />
             <div className="min-h-screen bg-[#fefcf8] px-4 md:px-16 py-10 text-gray-900">
-
                 {isMobile ? (
                     <div className="relative mb-8 rounded-xl overflow-hidden">
                         <Slider {...sliderSettings}>
                             {lugar.imagenes.map((img) => (
                                 <div key={img.id}>
-                                    <Image src={img.url} alt={lugar.nombre} width={800} height={500} className="w-full h-64 object-cover rounded-xl" />
+                                    <Image
+                                        src={img.url}
+                                        alt={lugar.nombre}
+                                        width={800}
+                                        height={500}
+                                        className="w-full h-64 object-cover rounded-xl"
+                                    />
                                 </div>
                             ))}
                         </Slider>
@@ -119,11 +123,23 @@ export default function LugarPage() {
                 ) : (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 rounded-xl overflow-hidden mb-8">
                         <div className="col-span-2 row-span-2 relative">
-                            <Image src={lugar.imagenes[0]?.url} alt={lugar.nombre} width={800} height={500} className="w-full h-full object-cover rounded-xl" />
+                            <Image
+                                src={lugar.imagenes[0]?.url}
+                                alt={lugar.nombre}
+                                width={800}
+                                height={500}
+                                className="w-full h-full object-cover rounded-xl"
+                            />
                         </div>
-                        {lugar.imagenes.slice(1).map((img, i) => (
+                        {lugar.imagenes.slice(1).map((img) => (
                             <div key={img.id} className="relative">
-                                <Image src={img.url} alt={lugar.nombre} width={400} height={250} className="w-full h-full object-cover rounded-xl" />
+                                <Image
+                                    src={img.url}
+                                    alt={lugar.nombre}
+                                    width={400}
+                                    height={250}
+                                    className="w-full h-full object-cover rounded-xl"
+                                />
                             </div>
                         ))}
                     </div>
@@ -135,14 +151,12 @@ export default function LugarPage() {
                     <p className="mt-2 text-gray-700 text-justify">{lugar.descripcion}</p>
                 </div>
 
-
                 <div className="mb-10 relative">
                     <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
                         <FaMapMarkerAlt className="text-blue-600" /> ¿Dónde queda?
                     </h2>
 
                     <div className="relative">
-                        {/* Mapa embebido normal con navegación */}
                         <iframe
                             src={`https://www.google.com/maps?q=${lugar.latitud},${lugar.longitud}&z=16&output=embed`}
                             width="100%"
@@ -152,7 +166,6 @@ export default function LugarPage() {
                             className="rounded-lg border"
                         ></iframe>
 
-                        {/* Botón flotante para abrir Google Maps */}
                         <button
                             onClick={() => {
                                 const url = `https://www.google.com/maps/search/?api=1&query=${lugar.latitud},${lugar.longitud}`;
@@ -165,71 +178,69 @@ export default function LugarPage() {
                     </div>
                 </div>
 
+                {/* Transportes */}
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                         <FaMapMarkerAlt className="text-purple-600" /> Transportes
                     </h2>
-                    {isMobile ? (
-                        renderSlider(lugar.transportes, "transporte")
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            {lugar.transportes.map(t => (
-                                <div key={t.id} className="bg-white rounded-xl shadow overflow-hidden">
-                                    <Image src={t.imagen} alt={t.nombre} width={400} height={250} className="w-full h-48 object-cover" />
-                                    <div className="p-3">
-                                        <h3 className="text-md font-semibold text-gray-800">{t.nombre}</h3>
-                                        <p className="text-sm text-gray-600">{t.descripcion}</p>
+                    {isMobile
+                        ? renderSlider(lugar.transportes, "transporte")
+                        : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                {lugar.transportes.map(t => (
+                                    <div key={t.id} className="bg-white rounded-xl shadow overflow-hidden">
+                                        <Image src={t.imagen} alt={t.nombre} width={400} height={250} className="w-full h-48 object-cover" />
+                                        <div className="p-3">
+                                            <h3 className="text-md font-semibold text-gray-800">{t.nombre}</h3>
+                                            <p className="text-sm text-gray-600">{t.descripcion}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
                 </section>
 
-
+                {/* Restaurantes */}
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                         <FaUtensils className="text-orange-500" /> Restaurantes
                     </h2>
-                    {isMobile ? (
-                        renderSlider(lugar.restaurantes, "restaurante")
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            {lugar.restaurantes.map(r => (
-                                <div key={r.id} className="bg-white rounded-xl shadow overflow-hidden">
-                                    <Image src={r.imagen} alt={r.nombre} width={400} height={250} className="w-full h-48 object-cover" />
-                                    <div className="p-3">
-                                        <h3 className="text-md font-semibold text-gray-800">{r.nombre}</h3>
+                    {isMobile
+                        ? renderSlider(lugar.restaurantes, "restaurante")
+                        : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                {lugar.restaurantes.map(r => (
+                                    <div key={r.id} className="bg-white rounded-xl shadow overflow-hidden">
+                                        <Image src={r.imagen} alt={r.nombre} width={400} height={250} className="w-full h-48 object-cover" />
+                                        <div className="p-3">
+                                            <h3 className="text-md font-semibold text-gray-800">{r.nombre}</h3>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
                 </section>
 
-
+                {/* Hoteles */}
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                         <FaHotel className="text-green-600" /> Hoteles
                     </h2>
-                    {isMobile ? (
-                        renderSlider(lugar.hoteles, "hotel")
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            {lugar.hoteles.map(h => (
-                                <div key={h.id} className="bg-white rounded-xl shadow overflow-hidden">
-                                    <Image src={h.imagen} alt={h.nombre} width={400} height={250} className="w-full h-48 object-cover" />
-                                    <div className="p-3">
-                                        <h3 className="text-md font-semibold text-gray-800">{h.nombre}</h3>
+                    {isMobile
+                        ? renderSlider(lugar.hoteles, "hotel")
+                        : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                {lugar.hoteles.map(h => (
+                                    <div key={h.id} className="bg-white rounded-xl shadow overflow-hidden">
+                                        <Image src={h.imagen} alt={h.nombre} width={400} height={250} className="w-full h-48 object-cover" />
+                                        <div className="p-3">
+                                            <h3 className="text-md font-semibold text-gray-800">{h.nombre}</h3>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
                 </section>
-
-
-
 
                 <DonCamaronWidget />
                 <Footer />
