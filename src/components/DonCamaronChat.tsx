@@ -7,70 +7,58 @@ interface DonCamaronChatProps {
   onClose: () => void;
 }
 
-const baseConocimiento = [
-  {
-    pregunta: "puerto jeli",
-    respuesta:
-      "Puerto Jelí está a unos 10 minutos del centro de Santa Rosa, ideal para mariscos y paseos en lancha.",
-  },
-  {
-    pregunta: "playas",
-    respuesta:
-      "Puedes visitar la Playa Jambelí y Las Huacas, muy populares en Santa Rosa.",
-  },
-  {
-    pregunta: "comida",
-    respuesta:
-      "La comida típica incluye arroz con camarón, ceviche, seco de chivo y empanadas de verde.",
-  },
-  {
-    pregunta: "tembladera",
-    respuesta:
-      "La Tembladera está al norte de Santa Rosa, conocida por sus manglares y paseos en bote.",
-  },
-  {
-    pregunta: "festival del camarón",
-    respuesta:
-      "El Festival del Camarón se celebra en enero con eventos culturales y gastronómicos.",
-  },
-];
-
-function obtenerRespuesta(mensaje: string): string {
-  if (!mensaje || typeof mensaje !== "string") return "Lo siento 😅, no entendí tu mensaje.";
-  const pregunta = mensaje.toLowerCase();
-  const match = baseConocimiento.find((item) => pregunta.includes(item.pregunta));
-  return match?.respuesta ||
-    "Lo siento 😅, no tengo información sobre eso. Pregunta sobre playas, comida, o sitios turísticos de Santa Rosa.";
+interface Mensaje {
+  remitente: "user" | "bot";
+  texto: string;
 }
 
 export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
-  const [mensajes, setMensajes] = useState([
+  const [mensajes, setMensajes] = useState<Mensaje[]>([
     {
       remitente: "bot",
       texto: "¡Hola! Soy Don Camarón 🦐 ¿En qué te puedo ayudar hoy?",
     },
   ]);
-  const [entrada, setEntrada] = useState("");
-  const [escribiendo, setEscribiendo] = useState(false);
+  const [entrada, setEntrada] = useState<string>(""); // ✅ el estado se define bien
+  const [escribiendo, setEscribiendo] = useState<boolean>(false);
 
-  const enviarMensaje = () => {
-    if (!entrada.trim()) return;
-    const nuevoMensaje = { remitente: "user", texto: entrada };
-    setMensajes((prev) => [...prev, nuevoMensaje]);
+  const enviarMensaje = async () => {
+    const texto = entrada.trim();
+    if (!texto) return;
+
+    // Añadir el mensaje del usuario
+    setMensajes((prev) => [...prev, { remitente: "user", texto }]);
+    setEntrada("");
     setEscribiendo(true);
 
-    setTimeout(() => {
-      const respuesta = { remitente: "bot", texto: obtenerRespuesta(entrada) };
-      setMensajes((prev) => [...prev, respuesta]);
-      setEscribiendo(false);
-    }, 1000);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensaje: texto }),
+      });
 
-    setEntrada("");
+      const data = await res.json();
+      const respuesta = data.respuesta || "😅 No entendí eso, ñaño.";
+
+      setMensajes((prev) => [...prev, { remitente: "bot", texto: respuesta }]);
+    } catch (error) {
+      setMensajes((prev) => [
+        ...prev,
+        {
+          remitente: "bot",
+          texto: "❌ No pude conectarme al servidor, mi broder.",
+        },
+      ]);
+    } finally {
+      setEscribiendo(false);
+    }
   };
 
   return (
     <div className="fixed bottom-4 right-2 left-2 md:right-4 md:left-auto z-50">
       <div className="bg-white w-full max-w-md mx-auto h-[80vh] md:h-[460px] rounded-xl shadow-lg flex flex-col overflow-hidden border">
+        {/* Header */}
         <div className="bg-orange-500 text-white px-4 py-2 flex justify-between items-center">
           <span className="text-sm md:text-base">Don Camarón Asistente</span>
           <button onClick={onClose} className="text-white font-bold text-xl">
@@ -78,6 +66,7 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
           </button>
         </div>
 
+        {/* Mensajes */}
         <div className="flex-1 p-3 md:p-4 space-y-3 overflow-y-auto text-sm">
           {mensajes.map((msg, i) => (
             <div
@@ -106,6 +95,7 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
               </div>
             </div>
           ))}
+
           {escribiendo && (
             <div className="flex items-start gap-2">
               <Image
@@ -124,14 +114,15 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
           )}
         </div>
 
-        <div className="flex border-t px-2 py-2 bg-gray-50">
+        {/* Input */}
+        <div className="flex border-t px-4 py-3 bg-gray-50">
           <input
             type="text"
-            className="flex-1 px-2 py-1 text-sm border rounded-l-md focus:outline-none"
-            placeholder="Escribe tu pregunta..."
             value={entrada}
             onChange={(e) => setEntrada(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && enviarMensaje()}
+            placeholder="Escribe tu pregunta..."
+            className="flex-1 px-3 py-2 text-sm border rounded-l-md focus:outline-none"
           />
           <button
             onClick={enviarMensaje}
@@ -142,7 +133,5 @@ export default function DonCamaronChat({ onClose }: DonCamaronChatProps) {
         </div>
       </div>
     </div>
-
-
   );
 }
