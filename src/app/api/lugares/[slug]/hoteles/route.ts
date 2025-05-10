@@ -5,10 +5,10 @@ const prisma = new PrismaClient();
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = params;
+    const slug = context.params.slug;
 
     const lugar = await prisma.lugar.findUnique({
       where: { slug },
@@ -17,11 +17,13 @@ export async function GET(
       },
     });
 
-    if (!lugar) return NextResponse.json({ error: "Lugar no encontrado" }, { status: 404 });
+    if (!lugar) {
+      return NextResponse.json({ error: "Lugar no encontrado" }, { status: 404 });
+    }
 
     return NextResponse.json(lugar.hoteles);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Error del servidor" }, { status: 500 });
+    console.error("[GET_HOTELES_ERROR]", error);
+    return NextResponse.json({ error: "Error al obtener hoteles" }, { status: 500 });
   }
 }
