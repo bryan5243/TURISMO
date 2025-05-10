@@ -3,16 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+interface Context {
+  params: {
+    slug: string;
+  };
+}
+
 /**
  * POST /api/lugares/[slug]/hoteles
  * Crea un hotel relacionado al lugar identificado por su slug.
  */
 export async function POST(
   request: NextRequest,
-  context: { params: { slug: string } }
+  { params }: Context
 ) {
   try {
-    const { slug } = await Promise.resolve(context.params); // evitar warning
+    const { slug } = params;
     const { nombre, imagen } = await request.json();
 
     if (!nombre || !imagen) {
@@ -22,10 +28,7 @@ export async function POST(
       );
     }
 
-    // Buscar el lugar por su slug
-    const lugar = await prisma.lugar.findUnique({
-      where: { slug },
-    });
+    const lugar = await prisma.lugar.findUnique({ where: { slug } });
 
     if (!lugar) {
       return NextResponse.json(
@@ -34,7 +37,6 @@ export async function POST(
       );
     }
 
-    // Crear hotel asociado al lugar
     const nuevoHotel = await prisma.hotel.create({
       data: {
         nombre,
@@ -59,10 +61,10 @@ export async function POST(
  */
 export async function GET(
   _request: NextRequest,
-  context: { params: { slug: string } }
+  { params }: Context
 ) {
   try {
-    const { slug } = await Promise.resolve(context.params);
+    const { slug } = params;
 
     const lugar = await prisma.lugar.findUnique({
       where: { slug },

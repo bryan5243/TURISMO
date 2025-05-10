@@ -9,6 +9,8 @@ import { FaMapMarkerAlt, FaUtensils, FaHotel } from "react-icons/fa";
 import Slider from "react-slick";
 import { useMediaQuery } from "react-responsive";
 import Footer from "@/components/footer";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 interface ImagenLugar {
     id: number;
@@ -47,6 +49,30 @@ interface Lugar {
     latitud: number;
     longitud: number;
 }
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+};
+ 
+// 👇 Añade esto arriba de tu componente o junto a tus otras funciones
+const renderSlider = (items: any[], tipo: "transporte" | "restaurante" | "hotel") => (
+    <Slider {...sliderSettings}>
+        {items.map((item: any) => (
+            <div key={item.id} className="px-2">
+                <div className="bg-white rounded-xl shadow overflow-hidden">
+                    <Image src={item.imagen} alt={item.nombre} width={400} height={250} className="w-full h-48 object-cover" />
+                    <div className="p-3">
+                        <h3 className="text-md font-semibold text-gray-800">{item.nombre}</h3>
+                        {tipo === "transporte" && <p className="text-sm text-gray-600">{item.descripcion}</p>}
+                    </div>
+                </div>
+            </div>
+        ))}
+    </Slider>
+);
 
 
 export default function LugarPage() {
@@ -143,17 +169,21 @@ export default function LugarPage() {
                     <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                         <FaMapMarkerAlt className="text-purple-600" /> Transportes
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {lugar.transportes.map(t => (
-                            <div key={t.id} className="bg-white rounded-xl shadow overflow-hidden">
-                                <Image src={t.imagen} alt={t.nombre} width={400} height={250} className="w-full h-48 object-cover" />
-                                <div className="p-3">
-                                    <h3 className="text-md font-semibold text-gray-800">{t.nombre}</h3>
-                                    <p className="text-sm text-gray-600">{t.descripcion}</p>
+                    {isMobile ? (
+                        renderSlider(lugar.transportes, "transporte")
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {lugar.transportes.map(t => (
+                                <div key={t.id} className="bg-white rounded-xl shadow overflow-hidden">
+                                    <Image src={t.imagen} alt={t.nombre} width={400} height={250} className="w-full h-48 object-cover" />
+                                    <div className="p-3">
+                                        <h3 className="text-md font-semibold text-gray-800">{t.nombre}</h3>
+                                        <p className="text-sm text-gray-600">{t.descripcion}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </section>
 
 
@@ -161,33 +191,43 @@ export default function LugarPage() {
                     <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                         <FaUtensils className="text-orange-500" /> Restaurantes
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {lugar.restaurantes.map(r => (
-                            <div key={r.id} className="bg-white rounded-xl shadow overflow-hidden">
-                                <Image src={r.imagen} alt={r.nombre} width={400} height={250} className="w-full h-48 object-cover" />
-                                <div className="p-3">
-                                    <h3 className="text-md font-semibold text-gray-800">{r.nombre}</h3>
+                    {isMobile ? (
+                        renderSlider(lugar.restaurantes, "restaurante")
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {lugar.restaurantes.map(r => (
+                                <div key={r.id} className="bg-white rounded-xl shadow overflow-hidden">
+                                    <Image src={r.imagen} alt={r.nombre} width={400} height={250} className="w-full h-48 object-cover" />
+                                    <div className="p-3">
+                                        <h3 className="text-md font-semibold text-gray-800">{r.nombre}</h3>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </section>
+
 
                 <section className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                         <FaHotel className="text-green-600" /> Hoteles
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {lugar.hoteles.map(h => (
-                            <div key={h.id} className="bg-white rounded-xl shadow overflow-hidden">
-                                <Image src={h.imagen} alt={h.nombre} width={400} height={250} className="w-full h-48 object-cover" />
-                                <div className="p-3">
-                                    <h3 className="text-md font-semibold text-gray-800">{h.nombre}</h3>
+                    {isMobile ? (
+                        renderSlider(lugar.hoteles, "hotel")
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {lugar.hoteles.map(h => (
+                                <div key={h.id} className="bg-white rounded-xl shadow overflow-hidden">
+                                    <Image src={h.imagen} alt={h.nombre} width={400} height={250} className="w-full h-48 object-cover" />
+                                    <div className="p-3">
+                                        <h3 className="text-md font-semibold text-gray-800">{h.nombre}</h3>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </section>
+
 
 
 
